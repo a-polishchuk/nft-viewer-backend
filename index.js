@@ -14,6 +14,9 @@ const port = process.env.PORT || 3000;
 
 express()
     .get('/api/v1/:wallet/nfts', cacheMiddleware, getNfts)
+    .use((req, res, next) => {
+        res.status(404).send('404 Not Found');
+    })
     .listen(port, () => {
-        console.log(`Server is running on http://localhost:${port}`);
+        console.log(`Server is running on port :${port}`);
     });

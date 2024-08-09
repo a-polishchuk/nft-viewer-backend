@@ -1,7 +1,7 @@
-const axios = require('axios');
-const { cache } = require('./cacheMiddleware');
+import axios from 'axios';
+import { redisClient, TTL } from './redisClient.js';
 
-async function getNfts(req, res) {
+export async function getNfts(req, res) {
     const wallet = req.params.wallet;
     const query = req.query;
 
@@ -14,13 +14,12 @@ async function getNfts(req, res) {
             params: query,
         });
 
-        cache.set(req.originalUrl, response.data);
+        const stringResp = JSON.stringify(response.data);
+        const key = req.originalUrl;
+        await redisClient.set(key, stringResp, { EX: TTL });
+
         res.status(200).json(response.data);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
-
-module.exports = {
-    getNfts
-};

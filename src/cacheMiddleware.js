@@ -1,11 +1,11 @@
-const NodeCache = require('node-cache');
+import NodeCache from 'node-cache';
 
-const cache = new NodeCache({
+export const cache = new NodeCache({
     stdTTL: 10 * 60,
     checkperiod: 2 * 60,
 });
 
-function cacheMiddleware(req, res, next) {
+export function cacheMiddleware(req, res, next) {
     const key = req.originalUrl;
     const cachedResponse = cache.get(key);
 
@@ -15,9 +15,4 @@ function cacheMiddleware(req, res, next) {
     } else {
         next();
     }
-};
-
-module.exports = {
-    cache,
-    cacheMiddleware
 };
